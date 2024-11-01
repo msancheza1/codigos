@@ -1,0 +1,51 @@
+import networkx as nx
+import matplotlib.pyplot as plt
+
+def generar_archivo_dot(nombre_archivo, grafo):
+    """
+    Genera un archivo DOT a partir de un grafo de NetworkX.
+
+    :param nombre_archivo: Nombre del archivo DOT a crear.
+    :param grafo: Objeto grafo de NetworkX.
+    """
+    with open(nombre_archivo, 'w') as f:
+        # Escribimos el encabezado del archivo DOT
+        f.write('digraph G {\n')
+
+        # Agregamos los nodos
+        for nodo in grafo.nodes:
+            f.write(f'    {nodo};\n')
+
+        # Agregamos las aristas
+        for origen, destino in grafo.edges:
+            f.write(f'    {origen} -> {destino};\n')
+
+        # Cerramos el gráfico
+        f.write('}\n')
+
+# Definir los nodos y aristas 
+nodes = ['SOC', 'R&D', 'NOC', 'CSIRT', 'IT', 'HR', 'MKT', 'FIN', 'DEV', 'OPS']
+G = nx.Graph()
+G.add_nodes_from(nodes)
+
+edges = [
+    ('SOC', 'R&D'), ('SOC', 'IT'), ('SOC', 'HR'),
+    ('R&D', 'NOC'), ('R&D', 'CSIRT'), ('R&D', 'IT'),
+    ('NOC', 'CSIRT'), ('NOC', 'IT'),
+    ('CSIRT', 'IT'),
+    ('IT', 'HR'), ('IT', 'MKT'), ('IT', 'FIN'), ('IT', 'DEV'), ('IT', 'OPS'),
+    ('HR', 'MKT'), ('HR', 'FIN'),
+    ('MKT', 'FIN'),
+    ('FIN', 'DEV'),
+    ('DEV', 'OPS')
+]
+G.add_edges_from(edges)
+
+# Generar el archivo DOT
+generar_archivo_dot('grafo.dot', G)
+
+# Visualizar el grafo
+plt.figure(figsize=(10, 6))
+nx.draw(G, with_labels=True, node_color='lightblue', node_size=2000, font_size=10, font_weight='bold', edge_color='gray')
+plt.title("Grafo de Conexiones")
+plt.show()
